@@ -18,30 +18,6 @@ app.use((req,res,next)=>{
     res.setHeader('Access-Control-Allow-Headers','Content-Type,Authorization');
     next();
 });
-
-// npm install --save body-parser express express-validator jsonwebtoken mysql2 sequelize
-app.get('/',(req,res,next)=>{
-  res.send("<!DOCTYPE html>"+
-'<html lang="en">'+
-"<head>"+
-  '<meta charset="UTF-8">'+
-  '<meta http-equiv="X-UA-Compatible" content="IE=edge">'+
-  '<title>Document</title>'+
-'</head>'+
-'<body>'+
-"<h1 style='color:red;'>WELCOME TO XTRAVEL COMPANY </h1><br>"+  
-"<h4 style='color:blue;'>powerd by :</h4><br>"+  
-"<ul style='color:navi;'>"+
-"<li>Yaser Alsamsam</li>"+
-"<li>Moaz Tello</li>"+
-"<li>Wassem Kaskas</li>"+
-"<li>Ahmad Obad</li>"+
-"<li>Massa Alzaied</li>"+
-"</ul><br>"+   
-'</body>'+
-'</html>');
-});
-
 app.use(Route);
 app.use((err,req,res,next)=>{res.status(err.statusCode).json({message:err.message});});
 (async()=>{

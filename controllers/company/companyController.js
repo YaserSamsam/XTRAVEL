@@ -1,7 +1,6 @@
 const customers=require('../../models/Customer');
 const trip=require('../../models/Trip');
 const bus=require('../../models/Bus');
-const { reset } = require('nodemon');
 
 const customerGetAllCustomers=async(req,res,next)=>{
     try{
