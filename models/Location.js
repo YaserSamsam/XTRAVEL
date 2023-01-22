@@ -1,7 +1,7 @@
 const seque=require('sequelize');
 const db=require('../util/DB');
 
-const reservation=db.define('reservations',{
+const locations=db.define('locations',{
         id:{
            type:seque.INTEGER,
            primaryKey:true,
@@ -14,11 +14,7 @@ const reservation=db.define('reservations',{
         coordinate:{
         type:seque.JSON,
         allowNull:false
-        },
-        reservation_Date:{
-            type:seque.DATE,
-            allowNull:false
         }
 });
 
-module.exports=reservation;
+module.exports=locations;

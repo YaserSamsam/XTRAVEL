@@ -1,5 +1,6 @@
 const busModel=require('../../models/Bus');
 const jwt=require('jsonwebtoken');
+const AI=require('./AI/AI');
 
 const refresh=async(req,res,next)=>{
         const bus_num=req.bus_num;
@@ -17,6 +18,11 @@ const refresh=async(req,res,next)=>{
                 });
                 tripCustomer[i]=custm;
             }
+            
+            // AI
+            // for each index in tripCustomer we will do the AI algorithem and override on that index
+            
+            //
             var i=-1;
             let trips=busTrips.map(item=>{
                  i++;
@@ -35,7 +41,7 @@ const refresh=async(req,res,next)=>{
     }catch(err){
         if(!err.statusCode)
            err.statusCode=500;
-        next(err);
+        throw err;
     }  
 };
 
@@ -73,7 +79,7 @@ const viewCustomers=async(req,res,next)=>{
        }catch(err){
         if(!err.statusCode)
               err.statusCode=500;
-        next(err);
+        throw err;
        }
 };
 
@@ -104,6 +110,10 @@ const login=async(req,res,next)=>{
         });
         tripCustomer[i]=custm;
     }
+    // AI
+    // for each index in tripCustomer we will do the AI algorithem and override on that index
+
+    // 
     var i=-1;
     let trips=busTrips.map(item=>{
          i++;
@@ -124,7 +134,7 @@ const login=async(req,res,next)=>{
 }catch(err){
     if(!err.statusCode)
        err.statusCode=500;
-    next(err);
+    throw err;
 }
 };
 

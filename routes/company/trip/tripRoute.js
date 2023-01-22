@@ -13,6 +13,6 @@ router.delete('/deleteTrip/:trip_id',companyController.tripDeleteTrip)
 router.post('/addTrip',companyController.tripAddTrip);// need validation
 
 
-router.put('/updateTrip/:trip_id',companyController.updateTrip);// need validation
+//router.put('/updateTrip/:trip_id',companyController.updateTrip);// need validation
 
 module.exports=router;

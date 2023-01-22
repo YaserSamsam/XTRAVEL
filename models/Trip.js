@@ -8,7 +8,7 @@ const trip=db.define('trips',{
         primaryKey:true
     },
     date:{
-        type:sequ.STRING,
+        type:sequ.DATE,
         allowNull:false,        
     },
     availabel_sets:{

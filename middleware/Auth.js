@@ -13,7 +13,7 @@ const customer_auth=(req,res,next)=>{
     }catch(err){
             if(!err.statusCode)
                  err.statusCode=500;
-            next(err);   
+            throw err;   
     }    
     if(!decodedToken){
             const err=new Error('you are not authenticated');
@@ -37,7 +37,7 @@ const driver_auth=(req,res,next)=>{
          }catch(err){
                  if(!err.statusCode)
                       err.statusCode=500;
-                 next(err);   
+                 throw err;  
          }    
          if(!decodedToken){
                  const err=new Error('you are not authenticated');

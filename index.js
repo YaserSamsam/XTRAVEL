@@ -7,6 +7,7 @@ const bus=require('./models/Bus');
 const reservation=require('./models/Reservation');
 const Route=require('./routes/IndexRoute');
 const app=express();
+// relations of tables
 customer.belongsToMany(trip,{through:reservation});
 trip.belongsToMany(customer,{through:reservation});
 bus.hasMany(trip);
@@ -22,7 +23,7 @@ app.use(Route);
 app.use((err,req,res,next)=>{res.status(err.statusCode).json({message:err.message});});
 (async()=>{
     try{
-    await db.sync();
+    await db.sync({force:true});
     app.listen(55055);
 }catch(err){
   console.log('can not connect to database');    

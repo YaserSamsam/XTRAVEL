@@ -1,24 +1,24 @@
 const seque=require('sequelize');
 const db=require('../util/DB');
 
-const reservation=db.define('reservations',{
+const problems=db.define('problems',{
         id:{
            type:seque.INTEGER,
            primaryKey:true,
            autoIncrement:true
         },
-        go_from:{
+        sender:{
             type:seque.STRING,
             allowNull:false
         },
-        coordinate:{
-        type:seque.JSON,
+        email:{
+        type:seque.STRING,
         allowNull:false
         },
-        reservation_Date:{
-            type:seque.DATE,
+        message:{
+            type:seque.TEXT,
             allowNull:false
         }
 });
 
-module.exports=reservation;
+module.exports=problems;
