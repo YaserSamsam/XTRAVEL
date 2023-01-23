@@ -12,7 +12,7 @@ const locations=db.define('locations',{
             allowNull:false
         },
         coordinate:{
-        type:seque.JSON,
+        type:seque.STRING,
         allowNull:false
         }
 });

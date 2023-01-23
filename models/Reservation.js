@@ -12,7 +12,7 @@ const reservation=db.define('reservations',{
             allowNull:false
         },
         coordinate:{
-        type:seque.JSON,
+        type:seque.STRING,
         allowNull:false
         },
         reservation_Date:{
