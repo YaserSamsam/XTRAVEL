@@ -23,7 +23,7 @@ app.use(Route);
 app.use((err,req,res,next)=>{res.status(err.statusCode).json({message:err.message});});
 (async()=>{
     try{
-    await db.sync({force:true});
+    await db.sync();
     app.listen(55055);
 }catch(err){
   console.log('can not connect to database');    

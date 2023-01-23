@@ -1,4 +1,6 @@
 const customers=require('../../../models/Customer');
+const problemss=require('../../../models/Problems');
+const Requestemploye=require('../../../models/Requestemploye');
 
 const customerAddCustomer=async(req,res,next)=>{
     const name = req.body.name;
@@ -237,6 +239,38 @@ const customerAddNewBalanceToCustomer=async(req,res,next)=>{
      }
 };
 
+const viewProblems=async(req,res,next)=>{
+    try{    
+        var allProblems=await problemss.findAll();
+        if(allProblems.length==0){
+            const err=new Error("no message found");
+            err.statusCode=404;
+            throw err;
+        }
+        res.status(200).json({problems:allProblems});
+    } catch(err){
+        if(!err.statusCode)
+           err.statusCode=500;
+        throw err;
+    }
+}
+
+const viewEmployeRequest=async(req,res,next)=>{
+    try{    
+        var allRequestemploye=await Requestemploye.findAll();
+        if(allRequestemploye.length==0){
+            const err=new Error("no request found");
+            err.statusCode=404;
+            throw err;
+        }
+        res.status(200).json({requests:allRequestemploye});
+    } catch(err){
+        if(!err.statusCode)
+           err.statusCode=500;
+        throw err;
+    }
+}
+
 module.exports={
     customerGetAllCustomers,
     customerGetCustomer,
@@ -246,4 +280,6 @@ module.exports={
     customerUpdateCustomer,
     customerAddNewBalanceToCustomer,
     customerAddCustomer,
+    viewProblems,
+    viewEmployeRequest
 }

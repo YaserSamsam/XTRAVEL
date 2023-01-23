@@ -19,6 +19,10 @@ const customerUpdateCustomer=CUSTOMER.customerUpdateCustomer;
 
 const customerAddNewBalanceToCustomer=CUSTOMER.customerAddNewBalanceToCustomer;
 
+const viewProblems=CUSTOMER.viewProblems;
+
+const viewEmployeRequest=CUSTOMER.viewEmployeRequest;
+
 // trip
 const tripGetAllTrips=TRIP.tripGetAllTrips;
 
@@ -65,5 +69,7 @@ module.exports={
     busGetBusInfo,
     busUpdateBus,
     busRemoveBus,
-    busAddBus
+    busAddBus,
+    viewProblems,
+    viewEmployeRequest
 }

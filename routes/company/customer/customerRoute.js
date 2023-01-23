@@ -6,6 +6,8 @@ const router=express.Router();
 router.get('/getAllCustomers',companyController.customerGetAllCustomers);
 router.get('/getCustomer/:customer_id',companyController.customerGetCustomer);// need validation
 router.get('/getCustomerReservations/:customer_id',companyController.customerGetCustomerReservations);// need validation
+router.get('/viewProblems',companyController.viewProblems);
+router.get('/viewEmployeRequest',companyController.viewEmployeRequest);
 
 router.delete('/removeCustomerReservation/:customer_id/:trip_id',companyController.customerRemoveCustomerReservation);// need validation
 router.delete('/deleteCustomer/:customer_id',companyController.customerDeleteCustomer);// need validation

@@ -2,6 +2,7 @@ const customerModel=require('../../models/Customer');
 const trip=require('../../models/Trip');
 const location=require('../../models/Location');
 const problems=require('../../models/Problems');
+const Requestemploye=require('../../models/Requestemploye');
 const bcryptjs=require('bcryptjs');
 const jwt=require('jsonwebtoken');
 
@@ -268,6 +269,26 @@ const snedProblem=async(req,res,next)=>{
        }
 }
 
+const snedEmployeRequest=async(req,res,next)=>{
+       const senderFirstName=req.body.senderFirstName;
+       const senderLaststName=req.body.senderLaststName;
+       const email=req.body.email;
+       const request=req.body.request;
+       try{
+            await Requestemploye.create({
+                senderFirstName:senderFirstName,
+                senderLaststName:senderLaststName,
+                email:email,
+                request:request
+            });
+            res.status(201).json({message:"request sent successful"});
+       }catch(err){
+        if(!err.statusCode)
+            err.statusCode=500;
+        throw err;
+       }
+};
+
 module.exports={
     login,
     getAllTrips,
@@ -277,5 +298,6 @@ module.exports={
     myRservations,
     myProfile,
     refreashAftereLogin,
-    snedProblem
+    snedProblem,
+    snedEmployeRequest
 }
