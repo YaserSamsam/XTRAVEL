@@ -24,8 +24,9 @@ app.use((err,req,res,next)=>{res.status(err.statusCode).json({message:err.messag
 (async()=>{
     try{
     await db.sync();
-    app.listen(55055);
+    app.listen(5505);
 }catch(err){
+  console.log(err);   
   console.log('can not connect to database');    
   err=new Error('can not connect to database');
   err.statusCode=404;

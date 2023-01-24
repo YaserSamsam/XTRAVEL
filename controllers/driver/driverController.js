@@ -41,7 +41,7 @@ const refresh=async(req,res,next)=>{
     }catch(err){
         if(!err.statusCode)
            err.statusCode=500;
-        throw err;
+           next(err);
     }  
 };
 
@@ -79,7 +79,7 @@ const viewCustomers=async(req,res,next)=>{
        }catch(err){
         if(!err.statusCode)
               err.statusCode=500;
-        throw err;
+              next(err);
        }
 };
 
@@ -134,7 +134,7 @@ const login=async(req,res,next)=>{
 }catch(err){
     if(!err.statusCode)
        err.statusCode=500;
-    throw err;
+       next(err);
 }
 };
 

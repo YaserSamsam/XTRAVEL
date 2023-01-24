@@ -34,7 +34,7 @@ const customerAddCustomer=async(req,res,next)=>{
         }catch(err){
             if(!err.statusCode)
                  err.statusCode=500;
-            throw err;
+            next(err);
         }
 };
 
@@ -61,7 +61,7 @@ const customerGetAllCustomers=async(req,res,next)=>{
     } catch(err){
         if(!err.statusCode)
             err.statusCode=500;
-        throw err;
+        next(err);
     }
 };
 
@@ -84,7 +84,7 @@ const customerGetCustomer=async(req,res,next)=>{
       }catch(err){
         if(!err.statusCode)
              err.statusCode=500;
-        throw err;
+        next(err);
       }
 };
 
@@ -113,7 +113,7 @@ const customerGetCustomerReservations=async(req,res,next)=>{
     }catch(err){
       if(!err.statusCode)
          err.statusCode=500;
-      throw err;
+      next(err);
     }
 };
 
@@ -145,7 +145,7 @@ const customerRemoveCustomerReservation=async(req,res,next)=>{
       }catch(err){
         if(!err.statusCode)
               err.statusCode=500;
-        throw err;
+        next(err);
       }
 };
 
@@ -159,8 +159,8 @@ const customerDeleteCustomer=async(req,res,next)=>{
        });
     }catch(err){
        if(!err.statusCode)
-       err.statusCode=500;
-       throw err;
+          err.statusCode=500;
+       next(err);
     }
 };
 
@@ -198,7 +198,7 @@ const customerUpdateCustomer=async(req,res,next)=>{
     } catch(err){
         if(!err.statusCode)
            err.statusCode=500;
-        throw err;
+        next(err);
     }
 };
 
@@ -235,7 +235,7 @@ const customerAddNewBalanceToCustomer=async(req,res,next)=>{
      }catch(err){
         if(!err.statusCode)
              err.statusCode=500;
-        throw err;
+        next(err);
      }
 };
 
@@ -251,7 +251,7 @@ const viewProblems=async(req,res,next)=>{
     } catch(err){
         if(!err.statusCode)
            err.statusCode=500;
-        throw err;
+        next(err);
     }
 }
 
@@ -267,7 +267,7 @@ const viewEmployeRequest=async(req,res,next)=>{
     } catch(err){
         if(!err.statusCode)
            err.statusCode=500;
-        throw err;
+        next(err);
     }
 }
 

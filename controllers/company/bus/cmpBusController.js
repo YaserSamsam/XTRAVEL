@@ -15,7 +15,7 @@ const busGetAllBuses=async(req,res,next)=>{
     }catch(err){
         if(!err.statusCode)
             err.statusCode=500;
-        throw err;
+        next(err);
     }
 };
 
@@ -31,7 +31,7 @@ const busGetBusInfo=async(req,res,next)=>{
     }catch(err){
         if(!err.statusCode)
             err.statusCode=500;
-        throw err;
+        next(err);
     } 
 };
 
@@ -55,7 +55,7 @@ const busUpdateBus=async(req,res,next)=>{
     }catch(err){
         if(!err.statusCode)
             err.statusCode=500;
-        throw err;
+        next(err);
     }
 };
 
@@ -82,7 +82,7 @@ const busRemoveBus=async(req,res,next)=>{
     }catch(err){
         if(!err.statusCode)
             err.statusCode=500;
-        throw err;
+        next(err);
     }
 };
 
@@ -107,7 +107,7 @@ const busAddBus=async(req,res,next)=>{
     }catch(err){
         if(!err.statusCode)
             err.statusCode=500;
-        throw err
+        next(err);
     }
    };
 

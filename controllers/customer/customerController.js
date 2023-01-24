@@ -45,7 +45,7 @@ const login = async(req,res,next)=>{
     }catch(err){
         if(!err.statusCode)
             err.statusCode=500;
-            throw err;
+            next(err);
     }
 };
 
@@ -80,7 +80,7 @@ const refreashAftereLogin = async(req,res,next)=>{
     }catch(err){
         if(!err.statusCode)
             err.statusCode=500;
-            throw err;
+            next(err);
     }
 };
 
@@ -88,7 +88,7 @@ const getAllTrips= async(req,res,next)=>{
    try{
     var trips=await trip.findAll();
     if(trips.length==0){
-        const err=new Error('not trips found');
+        const err=new Error('no trips found');
         err.statusCode=404;
         throw err;
     }
@@ -112,7 +112,7 @@ const getAllTrips= async(req,res,next)=>{
    }catch(err){
     if(!err.statusCode)
          err.statusCode=500;
-    throw err;
+    next(err);
    }
 };
 
@@ -159,7 +159,7 @@ const saveRservation= async(req,res,next)=>{
 } catch(err){
     if(!err.statusCode)
         err.statusCode=500;
-    throw err;
+        next(err);
 }
 };
 
@@ -186,7 +186,7 @@ const viewRservation=async(req,res,next)=>{
     } catch(err){
             if(!err.statusCode)
                err.statusCode=500;
-            throw err;
+               next(err);
     }
 };
 
@@ -217,7 +217,7 @@ const removeRservation=async(req,res,next)=>{
 } catch(err){
     if(!err.statusCode)
        err.statusCode=500;
-    throw err;
+       next(err);
 }
 };
 
@@ -235,7 +235,7 @@ const myRservations=async(req,res,next)=>{
     } catch(err){
          if(!err.statusCode)
               err.statusCode=500;
-         throw err;
+              next(err);
     }
 };
 
@@ -247,7 +247,7 @@ const myProfile=async(req,res,next)=>{
     }catch(err){
         if(!err.statusCode)
           err.statusCode=500;
-        throw err;
+          next(err);
     }
 };
 
@@ -265,7 +265,7 @@ const snedProblem=async(req,res,next)=>{
        }catch(err){
         if(!err.statusCode)
             err.statusCode=500;
-        throw err;
+            next(err);
        }
 }
 
@@ -285,7 +285,7 @@ const snedEmployeRequest=async(req,res,next)=>{
        }catch(err){
         if(!err.statusCode)
             err.statusCode=500;
-        throw err;
+            next(err);
        }
 };
 

@@ -38,7 +38,7 @@ const tripGetBusesId=async(req,res,next)=>{
     }catch(err){
         if(!err.statusCode)
             err.statusCode=500;
-        throw err;
+        next(err);
     }
 };
 
@@ -64,7 +64,7 @@ const tripAddTrip=async(req,res,next)=>{
     }catch(err){
         if(!err.statusCode)
             err.statusCode=500;
-        throw err;
+        next(err);
     }
 };
 
@@ -95,7 +95,7 @@ const tripGetTripInfo=async(req,res,next)=>{
     }catch(err){
         if(!err.statusCode)
            err.statusCode=500;
-        throw err;
+        next(err);
     }
 };
 
@@ -129,7 +129,7 @@ const tripRemoveCostumerFromTrip=async(req,res,next)=>{
     }catch(err){
         if(!err.statusCode)
            err.statusCode=500;
-        throw err;
+        next(err);
     }
 };
 
@@ -151,7 +151,7 @@ const tripGetTripInfoGetBusInfo=async(req,res,next)=>{
         }catch(err){
             if(!err.statusCode)
                err.statusCode=500;
-            throw err;
+            next(err);
         }
 };
 
@@ -174,7 +174,7 @@ const tripDeleteTrip=async(req,res,next)=>{
     }catch(err){
         if(!err.statusCode)
            err.statusCode=500;
-        throw err;
+        next(err);
     }
 };
 
