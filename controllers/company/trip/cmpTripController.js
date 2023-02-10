@@ -14,6 +14,7 @@ const tripGetAllTrips=async(req,res,next)=>{
         // destination
         // start_station
         // busBusNum
+        console.log(trips);
         for(i=0;i<trips.length;i++){
             let desCity=await CITY.findOne({where:{id:trips[i].destinationID}});
             let startCity=await CITY.findOne({where:{id:trips[i].cityId}});
