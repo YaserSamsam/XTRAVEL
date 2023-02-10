@@ -37,7 +37,7 @@ app.use((err,req,res,next)=>{res.status(err.statusCode).json({message:err.messag
     try{
     // await db.sync({alter:true});
     await db.sync();
-    module.exports =app;
+    
 }catch(err){
   console.log(err);   
   console.log('can not connect to database');    
@@ -46,3 +46,4 @@ app.use((err,req,res,next)=>{res.status(err.statusCode).json({message:err.messag
   throw err;
 }
 })();
+module.exports =app;
