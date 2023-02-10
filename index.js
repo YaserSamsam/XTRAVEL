@@ -35,8 +35,8 @@ app.use(Route);
 app.use((err,req,res,next)=>{res.status(err.statusCode).json({message:err.message});});
 (async()=>{
     try{
-    await db.sync({alter:true});
-    // await db.sync();
+    // await db.sync({alter:true});
+    await db.sync();
     app.listen(5505);
 }catch(err){
   console.log(err);   
