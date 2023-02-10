@@ -2,6 +2,7 @@ const customerModel=require('../../models/Customer');
 const trip=require('../../models/Trip');
 const location=require('../../models/Location');
 const problems=require('../../models/Problems');
+const CITY=require('../../models/City');
 const Requestemploye=require('../../models/Requestemploye');
 const bcryptjs=require('bcryptjs');
 const jwt=require('jsonwebtoken');
@@ -33,10 +34,56 @@ const login = async(req,res,next)=>{
     }
     // send all trips and token
     const trips=await trip.findAll();
+    // check date of trip
+    var availabelTrips=[];let availabelTripsIndex=0;
+    var notAvailabelTrips=[];let notAvailabelTripsIndex=0;
+    var dat=new Date().getTime();
+    var befor2Houers=dat-7200000;
+    for(i=0;i<trips.length;i++){
+      let totalTripTimeInSeconds=trips[i].date.getTime();
+      if(totalTripTimeInSeconds>befor2Houers) {
+           availabelTrips[availabelTripsIndex]=trips[i];
+           availabelTripsIndex++;
+        } else {
+        notAvailabelTrips[notAvailabelTripsIndex]=trips[i];
+        notAvailabelTripsIndex++;
+       }
+    }
+    //
     const token=jwt.sign({customer_id:costum[0].customer_id},'juniorToken',{expiresIn:'1h'});
     const customTrips=await costum[0].getTrips();
+    ////////////////// get value of city id and destination id in each trip
+    // destination
+    // start_station
+    // busBusNum
+    for(i=0;i<availabelTrips.length;i++){
+        let desCity=await CITY.findOne({where:{id:availabelTrips[i].destinationID}});
+        let startCity=await CITY.findOne({where:{id:availabelTrips[i].cityId}});
+        availabelTrips[i]={
+                trip_id:availabelTrips[i].trip_id,
+                date:availabelTrips[i].date,
+                availabel_sets:availabelTrips[i].availabel_sets,
+                destination:desCity.name,
+                start_station:startCity.name,
+                busBusNum:availabelTrips[i].busBusNum,
+            };
+        }
+    
+        for(i=0;i<customTrips.length;i++){
+            let desCity=await CITY.findOne({where:{id:customTrips[i].destinationID}});
+            let startCity=await CITY.findOne({where:{id:customTrips[i].cityId}});
+            customTrips[i]={
+                    trip_id:customTrips[i].trip_id,
+                    date:customTrips[i].date,
+                    availabel_sets:customTrips[i].availabel_sets,
+                    destination:desCity.name,
+                    start_station:startCity.name,
+                    busBusNum:customTrips[i].busBusNum,
+                };
+            }
+        ////////////////////////
     res.status(200).json({
-            trips:trips
+            trips:availabelTrips
             ,token:token
             ,customerTrips:customTrips
             ,customer:costum[0]
@@ -70,9 +117,55 @@ const refreashAftereLogin = async(req,res,next)=>{
     }*/
     // send all trips and token
     const trips=await trip.findAll();
+    // check date of trip
+    var availabelTrips=[];let availabelTripsIndex=0;
+    var notAvailabelTrips=[];let notAvailabelTripsIndex=0;
+    var dat=new Date().getTime();
+    var befor2Houers=dat-7200000;
+    for(i=0;i<trips.length;i++){
+      let totalTripTimeInSeconds=trips[i].date.getTime();
+      if(totalTripTimeInSeconds>befor2Houers) {
+           availabelTrips[availabelTripsIndex]=trips[i];
+           availabelTripsIndex++;
+        } else {
+        notAvailabelTrips[notAvailabelTripsIndex]=trips[i];
+        notAvailabelTripsIndex++;
+       }
+    }
+    //
     const customTrips=await costum[0].getTrips();
+    ////////////////// get value of city id and destination id in each trip
+    // destination
+    // start_station
+    // busBusNum
+    for(i=0;i<availabelTrips.length;i++){
+        let desCity=await CITY.findOne({where:{id:availabelTrips[i].destinationID}});
+        let startCity=await CITY.findOne({where:{id:availabelTrips[i].cityId}});
+        availabelTrips[i]={
+                trip_id:availabelTrips[i].trip_id,
+                date:availabelTrips[i].date,
+                availabel_sets:availabelTrips[i].availabel_sets,
+                destination:desCity.name,
+                start_station:startCity.name,
+                busBusNum:availabelTrips[i].busBusNum,
+            };
+        }
+    
+        for(i=0;i<customTrips.length;i++){
+            let desCity=await CITY.findOne({where:{id:customTrips[i].destinationID}});
+            let startCity=await CITY.findOne({where:{id:customTrips[i].cityId}});
+            customTrips[i]={
+                    trip_id:customTrips[i].trip_id,
+                    date:customTrips[i].date,
+                    availabel_sets:customTrips[i].availabel_sets,
+                    destination:desCity.name,
+                    start_station:startCity.name,
+                    busBusNum:customTrips[i].busBusNum,
+                };
+            }
+        ////////////////////////
     res.status(200).json({
-            trips:trips
+            trips:availabelTrips
             ,customerTrips:customTrips
             ,customer:costum[0]
     });
@@ -95,11 +188,11 @@ const getAllTrips= async(req,res,next)=>{
     // check date of trip
     var availabelTrips=[];let availabelTripsIndex=0;
     var notAvailabelTrips=[];let notAvailabelTripsIndex=0;
-    var dat=new Date();
-    var totalNowTimeInSeconds=dat.getTime()-7200000;//take time before 2 houres
+    var dat=new Date().getTime();
+    var befor2Houers=dat-7200000;
     for(i=0;i<trips.length;i++){
       let totalTripTimeInSeconds=trips[i].date.getTime();
-      if(totalTripTimeInSeconds>totalNowTimeInSeconds) {
+      if(totalTripTimeInSeconds>befor2Houers) {
            availabelTrips[availabelTripsIndex]=trips[i];
            availabelTripsIndex++;
         } else {
@@ -107,8 +200,24 @@ const getAllTrips= async(req,res,next)=>{
         notAvailabelTripsIndex++;
        }
     }
+    ////////////////// get value of city id and destination id in each trip
+    // destination
+    // start_station
+    // busBusNum
+    for(i=0;i<availabelTrips.length;i++){
+        let desCity=await CITY.findOne({where:{id:availabelTrips[i].destinationID}});
+        let startCity=await CITY.findOne({where:{id:availabelTrips[i].cityId}});
+        availabelTrips[i]={
+                trip_id:availabelTrips[i].trip_id,
+                date:availabelTrips[i].date,
+                availabel_sets:availabelTrips[i].availabel_sets,
+                destination:desCity.name,
+                start_station:startCity.name,
+                busBusNum:availabelTrips[i].busBusNum,
+            };
+        }
     //
-    res.status(200).json({trips:availabelTrips,oldTrips:notAvailabelTripsIndex});
+    res.status(200).json({trips:availabelTrips});
    }catch(err){
     if(!err.statusCode)
          err.statusCode=500;
@@ -136,25 +245,69 @@ const saveRservation= async(req,res,next)=>{
         err.statusCode=422;
         throw err;
     }
-    let changeSeatsNum=await trip.findOne({where:{trip_id:trip_id}});
-    changeSeatsNum.availabel_sets--;
-    await changeSeatsNum.save();
+    let Trip=await trip.findOne({where:{trip_id:trip_id}});
+    Trip.availabel_sets--;
+    await Trip.save();
     trip_availabel--;
     custm.trip_availabel=trip_availabel;
-    let reservationDate=new Date();
     await custm.save();
-    const Trip=await trip.findOne({where:{trip_id:trip_id}});
+    let reservationDate=new Date();
     const LOCATION=await location.findOne({where:{go_from:go_from}});
-    await Trip.addCustomer(custm,{through:{go_from:go_from,coordinate:LOCATION.coordinate,reservation_Date:reservationDate}});
-    const trips=await custm.getTrips();
-    const AllTrips=await trip.findAll();
+    await Trip.addCustomer(custm,{through:{reservation_Date:reservationDate,locationId:LOCATION.id}});
+    const customTrips=await custm.getTrips();
+    const trips=await trip.findAll();
+    // check date of trip
+    var availabelTrips=[];let availabelTripsIndex=0;
+    var notAvailabelTrips=[];let notAvailabelTripsIndex=0;
+    var dat=new Date().getTime();
+    var befor2Houers=dat-7200000;
+    for(i=0;i<trips.length;i++){
+      let totalTripTimeInSeconds=trips[i].date.getTime();
+      if(totalTripTimeInSeconds>befor2Houers) {
+           availabelTrips[availabelTripsIndex]=trips[i];
+           availabelTripsIndex++;
+        } else {
+        notAvailabelTrips[notAvailabelTripsIndex]=trips[i];
+        notAvailabelTripsIndex++;
+       }
+    }
+    ////////////////// get value of city id and destination id in each trip
+    // destination
+    // start_station
+    // busBusNum
+    for(i=0;i<availabelTrips.length;i++){
+        let desCity=await CITY.findOne({where:{id:availabelTrips[i].destinationID}});
+        let startCity=await CITY.findOne({where:{id:availabelTrips[i].cityId}});
+        availabelTrips[i]={
+                trip_id:availabelTrips[i].trip_id,
+                date:availabelTrips[i].date,
+                availabel_sets:availabelTrips[i].availabel_sets,
+                destination:desCity.name,
+                start_station:startCity.name,
+                busBusNum:availabelTrips[i].busBusNum,
+            };
+        }
+        for(i=0;i<customTrips.length;i++){
+            let desCity=await CITY.findOne({where:{id:customTrips[i].destinationID}});
+            let startCity=await CITY.findOne({where:{id:customTrips[i].cityId}});
+            customTrips[i]={
+                    trip_id:customTrips[i].trip_id,
+                    date:customTrips[i].date,
+                    availabel_sets:customTrips[i].availabel_sets,
+                    destination:desCity.name,
+                    start_station:startCity.name,
+                    busBusNum:customTrips[i].busBusNum,
+                };
+            }
+    //
+    ///
     res.status(200).json({
         message:"booking success"
-        ,trips:trips
+        ,trips:customTrips
         ,trip_availabel:trip_availabel
         ,userTrip:Trip
         ,user:custm
-        ,AllTrips:AllTrips
+        ,AllTrips:trips
     });
 } catch(err){
     if(!err.statusCode)
@@ -171,8 +324,13 @@ const viewRservation=async(req,res,next)=>{
     try{
     const Trrip=await trip.findOne({where:{trip_id:trip_id}});
     const custm=await customerModel.findOne({where:{customer_id:customer_id}});
-    let Locations=await location.findAll();
-    Locations=Locations.map(i=>{return{id:i.id,go_from:i.go_from}});
+    // return source city locations
+    var sourceCity=await  CITY.findOne({where:{id:Trrip.cityId}});
+    let cityLocations=await sourceCity.getLocations();
+    cityLocations=cityLocations.map(i=>{
+        return{ id:i.id,go_from:i.go_from,coordinate:i.coordinate};
+    });
+    //
     const trip_availabel=custm.trip_availabel;
     let check_seats=false;
     if(Trrip.availabel_sets>0)
@@ -181,7 +339,7 @@ const viewRservation=async(req,res,next)=>{
                 trip_id:trip_id
                ,trip_availabel:trip_availabel
                ,check_seats:check_seats
-               ,Locations:Locations
+               ,Locations:cityLocations
             });
     } catch(err){
             if(!err.statusCode)
@@ -196,8 +354,7 @@ const removeRservation=async(req,res,next)=>{
    // validation to trip_id
    // 
    try{
-   const custm=await customerModel.findOne({where:{customer_id:customer_id}});
-   let custm_trip=await custm.getTrips({where:{trip_id:trip_id}});
+   let custm=await customerModel.findOne({where:{customer_id:customer_id}});
    let changeSeatsNum=await trip.findOne({where:{trip_id:trip_id}});
    changeSeatsNum.availabel_sets++;
    await changeSeatsNum.save();
@@ -210,10 +367,69 @@ const removeRservation=async(req,res,next)=>{
     await custm.save();
    }
    //
+   let custm_trip=await custm.getTrips({where:{trip_id:trip_id}});
    await custm_trip[0].reservations.destroy();
-   custm_trip=await custm.getTrips();
-   const AllTrips=await trip.findAll();
-   res.status(200).json({trips:custm_trip,message:"delete success",user:custm,AllTrips:AllTrips});
+   const customTrips=await custm.getTrips();
+   const trips=await trip.findAll();
+   //
+   // check date of trip
+   var availabelTrips=[];let availabelTripsIndex=0;
+   var notAvailabelTrips=[];let notAvailabelTripsIndex=0;
+   var dat=new Date().getTime();
+   var befor2Houers=dat-7200000;
+   for(i=0;i<trips.length;i++){
+     let totalTripTimeInSeconds=trips[i].date.getTime();
+     if(totalTripTimeInSeconds>befor2Houers) {
+          availabelTrips[availabelTripsIndex]=trips[i];
+          availabelTripsIndex++;
+       } else {
+       notAvailabelTrips[notAvailabelTripsIndex]=trips[i];
+       notAvailabelTripsIndex++;
+      }
+   }
+   ////////////////// get value of city id and destination id in each trip
+   // destination
+   // start_station
+   // busBusNum
+   for(i=0;i<availabelTrips.length;i++){
+       let desCity=await CITY.findOne({where:{id:availabelTrips[i].destinationID}});
+       let startCity=await CITY.findOne({where:{id:availabelTrips[i].cityId}});
+       availabelTrips[i]={
+               trip_id:availabelTrips[i].trip_id,
+               date:availabelTrips[i].date,
+               availabel_sets:availabelTrips[i].availabel_sets,
+               destination:desCity.name,
+               start_station:startCity.name,
+               busBusNum:availabelTrips[i].busBusNum,
+           };
+       }
+       for(i=0;i<customTrips.length;i++){
+           let desCity=await CITY.findOne({where:{id:customTrips[i].destinationID}});
+           let startCity=await CITY.findOne({where:{id:customTrips[i].cityId}});
+           customTrips[i]={
+                   trip_id:customTrips[i].trip_id,
+                   date:customTrips[i].date,
+                   availabel_sets:customTrips[i].availabel_sets,
+                   destination:desCity.name,
+                   start_station:startCity.name,
+                   busBusNum:customTrips[i].busBusNum,
+               };
+           }
+   //
+   custm={
+        customer_id:      custm.customer_id     ,   
+        name:             custm.name            ,
+        fathername:       custm.fathername      ,
+        mothername:       custm.mothername      ,
+        birthdate:        custm.birthdate       ,
+        address:          custm.address         ,
+        iss:              custm.iss             ,
+        trip_availabel:   custm.trip_availabel  ,
+        username:         custm.username        ,
+        password:         custm.password        ,
+        registration_date:custm.registration_date
+   };
+   res.status(200).json({trips:customTrips,message:"delete success",user:custm,AllTrips:availabelTrips});
 } catch(err){
     if(!err.statusCode)
        err.statusCode=500;
@@ -225,13 +441,30 @@ const myRservations=async(req,res,next)=>{
     const customer_id=req.customer_id;
     try{
          const custm=await customerModel.findOne({where:{customer_id:customer_id}});
-         const custm_trips=await custm.getTrips();
-         if(custm_trips.length==0){
+         const customTrips=await custm.getTrips();
+         if(customTrips.length==0){
             const err=new Error('No reservations found');
             err.statusCode=404;
             throw err;
          }
-         res.status(200).json({trips:custm_trips});
+         ////////////////// get value of city id and destination id in each trip
+         // destination
+         // start_station
+         // busBusNum
+         for(i=0;i<customTrips.length;i++){
+            let desCity=await CITY.findOne({where:{id:customTrips[i].destinationID}});
+            let startCity=await CITY.findOne({where:{id:customTrips[i].cityId}});
+            customTrips[i]={
+                    trip_id:customTrips[i].trip_id,
+                    date:customTrips[i].date,
+                    availabel_sets:customTrips[i].availabel_sets,
+                    destination:desCity.name,
+                    start_station:startCity.name,
+                    busBusNum:customTrips[i].busBusNum,
+                };
+            }
+        /////////
+         res.status(200).json({trips:customTrips});
     } catch(err){
          if(!err.statusCode)
               err.statusCode=500;

@@ -12,8 +12,8 @@ const locations=db.define('locations',{
             allowNull:false
         },
         coordinate:{
-        type:seque.STRING,
-        allowNull:false
+            type:seque.STRING,
+            allowNull:false
         }
 });
 

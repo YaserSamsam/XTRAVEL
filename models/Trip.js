@@ -14,14 +14,6 @@ const trip=db.define('trips',{
     availabel_sets:{
         type:sequ.STRING,
         allowNull:false,        
-    },
-    destination:{
-        type:sequ.STRING,
-        allowNull:false,        
-    },
-    start_station:{
-        type:sequ.STRING,
-        allowNull:false,        
     }
 });
 

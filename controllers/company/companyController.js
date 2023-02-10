@@ -1,6 +1,7 @@
 const CUSTOMER=require('./customer/cmpCustomerController');
 const TRIP=require('./trip/cmpTripController');
 const BUS=require('./bus/cmpBusController');
+const CITY=require('./city/cityController');
 
 //customer
 const customerAddCustomer=CUSTOMER.customerAddCustomer;
@@ -49,6 +50,13 @@ const busRemoveBus=BUS.busRemoveBus;
 
 const busAddBus=BUS.busAddBus;
 
+//city
+const addCityWithLocations=CITY.addCityWithLocations;
+
+const getAllCityCoordinates=CITY.getAllCityCoordinates;
+
+const getCities=CITY.getCities;
+
 module.exports={
     customerGetAllCustomers,
     customerGetCustomer,
@@ -71,5 +79,8 @@ module.exports={
     busRemoveBus,
     busAddBus,
     viewProblems,
-    viewEmployeRequest
+    viewEmployeRequest,
+    addCityWithLocations,
+    getAllCityCoordinates,
+    getCities
 }

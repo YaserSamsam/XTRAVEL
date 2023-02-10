@@ -1,6 +1,7 @@
 const customers=require('../../../models/Customer');
 const problemss=require('../../../models/Problems');
 const Requestemploye=require('../../../models/Requestemploye');
+const CITY=require('../../../models/City');
 
 const customerAddCustomer=async(req,res,next)=>{
     const name = req.body.name;
@@ -12,30 +13,30 @@ const customerAddCustomer=async(req,res,next)=>{
     const trip_availabel=req.body.trip_availabel;
     const username=req.body.username;
     const password=req.body.password;
-    const registration_date=new Date();
-            // validation
-            // 
-        try{
-            await customers.create({
-                name:name
-                ,fathername:fathername
-                ,mothername:mothername
-                ,birthdate:birthdate
-                ,address:address
-                ,iss:iss
-                ,trip_availabel:trip_availabel
-                ,username:username
-                ,password:password
-                ,registration_date:registration_date
-            });
-            res.status(201).json({
-                message:"customer added success"
-            });
-        }catch(err){
-            if(!err.statusCode)
-                 err.statusCode=500;
-            next(err);
-        }
+    const registration_date=new Date().toString();
+    // validation
+    // 
+    try{
+        await customers.create({
+            name:name
+            ,fathername:fathername
+            ,mothername:mothername
+            ,birthdate:birthdate
+            ,address:address
+            ,iss:iss
+            ,trip_availabel:trip_availabel
+            ,username:username
+            ,password:password
+            ,registration_date:registration_date
+        });
+        res.status(201).json({
+            message:"customer added success"
+        });
+    }catch(err){
+        if(!err.statusCode)
+             err.statusCode=500;
+        next(err);
+    }
 };
 
 const customerGetAllCustomers=async(req,res,next)=>{
@@ -66,50 +67,50 @@ const customerGetAllCustomers=async(req,res,next)=>{
 };
 
 const customerGetCustomer=async(req,res,next)=>{
-      const customer_id=req.params.customer_id;
+    const customer_id=req.params.customer_id;
     ////////// customer_id validation //////////
-    // const err=validationResult(req);
-    // if(!err.isEmpty()){
-    //         res.json({
-    //             param:err.array()[0].param,
-    //             msg:err.array()[0].msg
-    //         });
-    // }
-    /////////////////////////////////////////////
-      try{
-            const user=await customers.findOne({where:{customer_id:customer_id}});
-            res.status(200).json({
-                user:user
-            });
-      }catch(err){
-        if(!err.statusCode)
-             err.statusCode=500;
-        next(err);
-      }
+    try{
+          const user=await customers.findOne({where:{customer_id:customer_id}});
+          res.status(200).json({
+              user:user
+          });
+    }catch(err){
+      if(!err.statusCode)
+           err.statusCode=500;
+      next(err);
+    }
 };
 
 const customerGetCustomerReservations=async(req,res,next)=>{
     const customer_id=req.params.customer_id;// need validation
     try{
-    const user=await customers.findOne({where:{customer_id:customer_id}});
-    let customerTrips=await user.getTrips();
-    if(customerTrips.length==0){
-        const err=new Error('no reservations');
-        err.statusCode=404;
-        throw err;
-     }
-    customerTrips=customerTrips.map(i=>{
-        return{
-            "trip_id":i.trip_id
-            ,"date":i.date
-            ,"availabel_sets":i.availabel_sets
-            ,"destination":i.destination
-            ,"start_station":i.start_station               
-        }
-    });
-    res.status(200).json({
-        trips:customerTrips
-    });
+        const user=await customers.findOne({where:{customer_id:customer_id}});
+        let customTrips=await user.getTrips();
+        if(customTrips.length==0){
+            const err=new Error('no reservations');
+            err.statusCode=404;
+            throw err;
+         }
+        ////////////////// get value of city id and destination id in each trip
+        // destination
+        // start_station
+        // busBusNum
+        for(i=0;i<customTrips.length;i++){
+           let desCity=await CITY.findOne({where:{id:customTrips[i].destinationID}});
+           let startCity=await CITY.findOne({where:{id:customTrips[i].cityId}});
+           customTrips[i]={
+                   trip_id:customTrips[i].trip_id,
+                   date:customTrips[i].date,
+                   availabel_sets:customTrips[i].availabel_sets,
+                   destination:desCity.name,
+                   start_station:startCity.name,
+                   busBusNum:customTrips[i].busBusNum,
+               };
+           }
+        ////////
+        res.status(200).json({
+            trips:customTrips
+        });
     }catch(err){
       if(!err.statusCode)
          err.statusCode=500;
@@ -123,24 +124,32 @@ const customerRemoveCustomerReservation=async(req,res,next)=>{
       try{
            const customer=await customers.findOne({where:{customer_id:customer_id}});
            const TripDelete=await customer.getTrips({where:{trip_id:trip_id}});
-           const deleteCustomTrip=await TripDelete[0].reservations.destroy();
-           let customerTrips=await customer.getTrips();
-           if(customerTrips.length==0){
+           await TripDelete[0].reservations.destroy();
+           let customTrips=await customer.getTrips();
+           if(customTrips.length==0){
               const err=new Error('no reservations');
               err.statusCode=404;
               throw err;
            }
-           customerTrips=customerTrips.map(i=>{
-            return{
-                "trip_id":i.trip_id
-                ,"date":i.date
-                ,"availabel_sets":i.availabel_sets
-                ,"destination":i.destination
-                ,"start_station":i.start_station               
+        ////////////////// get value of city id and destination id in each trip
+        // destination
+        // start_station
+        // busBusNum
+        for(i=0;i<customTrips.length;i++){
+            let desCity=await CITY.findOne({where:{id:customTrips[i].destinationID}});
+            let startCity=await CITY.findOne({where:{id:customTrips[i].cityId}});
+            customTrips[i]={
+                    trip_id:customTrips[i].trip_id,
+                    date:customTrips[i].date,
+                    availabel_sets:customTrips[i].availabel_sets,
+                    destination:desCity.name,
+                    start_station:startCity.name,
+                    busBusNum:customTrips[i].busBusNum,
+                };
             }
-        });
-           res.status(200).json({
-              trips:customerTrips
+         ////////
+        res.status(200).json({
+              trips:customTrips
            });
       }catch(err){
         if(!err.statusCode)
@@ -155,7 +164,7 @@ const customerDeleteCustomer=async(req,res,next)=>{
         const costm=await customers.findOne({where:{customer_id:customer_id}});
         await costm.destroy();
         res.status(200).json({
-           message:"delete success ! "
+           message:"delete success !! "
        });
     }catch(err){
        if(!err.statusCode)
@@ -175,7 +184,6 @@ const customerUpdateCustomer=async(req,res,next)=>{
         const trip_availabel=req.body.trip_availabel;
         const username=req.body.username;
         const password=req.body.password;
-        const registration_date="dddd";
         // validation
         // ...
         //
@@ -190,7 +198,7 @@ const customerUpdateCustomer=async(req,res,next)=>{
         custm.trip_availabel=trip_availabel;
         custm.username=username;
         custm.password=password;
-        custm.registration_date=registration_date;
+        custm.registration_date=custm.registration_date;
         custm.save();
         res.status(200).json({
             message:"update success !! "
@@ -210,9 +218,9 @@ const customerAddNewBalanceToCustomer=async(req,res,next)=>{
      try{
        let custm=await customers.findAll({where:{username:username}});
        if(custm.length==0){
-         const err=new Error('this customer not found');
-         err.statusCode=404;
-         throw err;
+           const err=new Error('this customer not found');
+           err.statusCode=404;
+           throw err;
        }
        custm[0].trip_availabel=trip_availabel;
        custm[0].save();

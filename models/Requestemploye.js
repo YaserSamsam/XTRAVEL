@@ -1,7 +1,7 @@
 const seque=require('sequelize');
 const db=require('../util/DB');
 
-const requestemploye=db.define('requestemploye',{
+const requestemploye=db.define('requestemployes',{
         id:{
            type:seque.INTEGER,
            primaryKey:true,

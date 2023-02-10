@@ -1,4 +1,5 @@
 const busModel=require('../../models/Bus');
+const TRIP=require('../../models/Trip');
 const jwt=require('jsonwebtoken');
 const AI=require('./AI/AI');
 
@@ -7,33 +8,51 @@ const refresh=async(req,res,next)=>{
         try{
             const bus=await busModel.findOne({where:{bus_num:bus_num}});
             let busTrips=await bus.getTrips();
-            const tripCustomer=new Array(busTrips.length);
-            let custm;
+            // check date of trip
+            var availabelTrips=[];let availabelTripsIndex=0;
+            var notAvailabelTrips=[];let notAvailabelTripsIndex=0;
+            var dat=new Date().getTime();
+            var befor2Houers=dat-7200000;
             for(i=0;i<busTrips.length;i++){
-                custm=await busTrips[i].getCustomers({attributes: ['customer_id']});    
-                custm=custm.map(i=>{
-                    let go_from=i.reservations.go_from;
-                    let customer_id=i.customer_id;
-                    return {"customer_id":customer_id,"go_from":go_from};
-                });
-                tripCustomer[i]=custm;
+              let totalTripTimeInSeconds=busTrips[i].date.getTime();
+              if(totalTripTimeInSeconds>befor2Houers) {
+                   availabelTrips[availabelTripsIndex]=busTrips[i];
+                   availabelTripsIndex++;
+                } else {
+                notAvailabelTrips[notAvailabelTripsIndex]=busTrips[i];
+                notAvailabelTripsIndex++;
+               }
             }
-            
+            //
+            const tripCustomer=new Array(availabelTrips.length);
+            let custm;
+            for(i=0;i<availabelTrips.length;i++){
+                custm=await availabelTrips[i].getCustomers({attributes: ['customer_id']});
+                let locatn=[];
+                for(j=0;j<custm.length;j++){
+                    let go_from=await custm[j].reservations.getLocation();
+                    locatn[j]={customer_id:custm[j].customer_id,location:{
+                                                                             id:go_from.id,
+                                                                             coordinate:go_from.coordinate
+                                                                         }};
+                }
+                tripCustomer[i]=locatn;
+            }
             // AI
             // for each index in tripCustomer we will do the AI algorithem and override on that index
-            
-            //
+            // work with tripCustomer[].location.id coordinate cost
+            // 
             var i=-1;
-            let trips=busTrips.map(item=>{
-                 i++;
-                 return{
+            let trips=availabelTrips.map(item=>{
+                i++;
+                return{
                     trip_id:item.trip_id
                     ,date:item.date
-                    ,destination:item.destination
+                    ,destination:item.destinationID
                     ,availabel_sets:item.availabel_sets
-                    ,start_station:item.start_station
+                    ,start_station:item.cityId
                     ,customers_location:tripCustomer[i]
-                 };
+                };
             });
         res.status(200).json({
             trips:trips
@@ -98,31 +117,50 @@ const login=async(req,res,next)=>{
         err.statusCode=404;
         throw err;
     }
-    let busTrips=await bus[0].getTrips();
-    const tripCustomer=new Array(busTrips.length);
+    let busTrips=await bus[0].getTrips();   
+     // check date of trip
+     var availabelTrips=[];let availabelTripsIndex=0;
+     var notAvailabelTrips=[];let notAvailabelTripsIndex=0;
+     var dat=new Date().getTime();
+     var befor2Houers=dat-7200000;
+     for(i=0;i<busTrips.length;i++){
+       let totalTripTimeInSeconds=busTrips[i].date.getTime();
+       if(totalTripTimeInSeconds>befor2Houers) {
+            availabelTrips[availabelTripsIndex]=busTrips[i];
+            availabelTripsIndex++;
+         } else {
+         notAvailabelTrips[notAvailabelTripsIndex]=busTrips[i];
+         notAvailabelTripsIndex++;
+        }
+     }
+     //
+    const tripCustomer=new Array(availabelTrips.length);
     let custm;
-    for(i=0;i<busTrips.length;i++){
-        custm=await busTrips[i].getCustomers({attributes: ['customer_id']});    
-        custm=custm.map(i=>{
-            let go_from=i.reservations.go_from;
-            let customer_id=i.customer_id;
-            return {"customer_id":customer_id,"go_from":go_from};
-        });
-        tripCustomer[i]=custm;
+    for(i=0;i<availabelTrips.length;i++){
+        custm=await availabelTrips[i].getCustomers({attributes: ['customer_id']});
+        let locatn=[];
+        for(j=0;j<custm.length;j++){
+            let go_from=await custm[j].reservations.getLocation();
+            locatn[j]={customer_id:custm[j].customer_id,location:{
+                                                                     id:go_from.id,
+                                                                     coordinate:go_from.coordinate
+                                                                 }};
+        }
+        tripCustomer[i]=locatn;
     }
     // AI
     // for each index in tripCustomer we will do the AI algorithem and override on that index
-
+    // work with tripCustomer[].location.id coordinate cost
     // 
     var i=-1;
-    let trips=busTrips.map(item=>{
+    let trips=availabelTrips.map(item=>{
          i++;
          return{
             trip_id:item.trip_id
             ,date:item.date
-            ,destination:item.destination
+            ,destination:item.destinationID
             ,availabel_sets:item.availabel_sets
-            ,start_station:item.start_station
+            ,start_station:item.cityId
             ,customers_location:tripCustomer[i]
          };
     });
@@ -138,8 +176,32 @@ const login=async(req,res,next)=>{
 }
 };
 
+const getTripLocations=async(req,res,next)=>{
+    const tripId=req.params.trip_id;
+    try{
+        const trip=await TRIP.findOne({where:{trip_id:tripId}});
+        const custm=await trip.getCustomers();
+        let locatn=[];
+        for(j=0;j<custm.length;j++){
+            let coordinates=await custm[j].reservations.getLocation();
+            locatn[j]={coordinate:coordinates.coordinate};    
+        }
+        // AI
+        
+        //
+        res.status(200).json({
+            coordinates:locatn
+        });
+    } catch(err){
+        if(!err.statusCode)
+           err.statusCode=500;
+        next(err);
+    }
+};
+
 module.exports={
     refresh,
     viewCustomers,
-    login
+    login,
+    getTripLocations
 }

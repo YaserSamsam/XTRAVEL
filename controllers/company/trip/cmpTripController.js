@@ -1,17 +1,35 @@
 const trip=require('../../../models/Trip');
 const bus=require('../../../models/Bus');
+const CITY=require('../../../models/City');
 
 const tripGetAllTrips=async(req,res,next)=>{
     try{
-      const trips=await trip.findAll();
-      if(trips.length==0){
-        const err=new Error('there are no trips availabel');
-        err.statusCode=404;
-        throw err;
-      }
-      res.status(200).json({
-        trips:trips
-      });
+        const trips=await trip.findAll();
+        if(trips.length==0){
+          const err=new Error('there are no trips availabel');
+          err.statusCode=404;
+          throw err;
+        }
+        ////////////////// get value of city id and destination id in each trip
+        // destination
+        // start_station
+        // busBusNum
+        for(i=0;i<trips.length;i++){
+            let desCity=await CITY.findOne({where:{id:trips[i].destinationID}});
+            let startCity=await CITY.findOne({where:{id:trips[i].cityId}});
+            trips[i]={
+                    trip_id:trips[i].trip_id,
+                    date:trips[i].date,
+                    availabel_sets:trips[i].availabel_sets,
+                    destination:desCity.name,
+                    start_station:startCity.name,
+                    busBusNum:trips[i].busBusNum,
+                };
+            }
+        //
+        res.status(200).json({
+          trips:trips
+        });
     }catch(err){
         if(!err.statusCode)
             err.statusCode=500;
@@ -47,16 +65,15 @@ const tripAddTrip=async(req,res,next)=>{
     const bus_num=req.body.bus_num;
     const destination=req.body.destination;
     const start_station=req.body.start_station;
-
-        // validation
-        // 
+    // validation
+    // 
     try{
         const busTrip=await bus.findOne({where:{bus_num:bus_num}});
         const addTripToBus=await busTrip.createTrip({
                 date:date,
                 availabel_sets:busTrip.sets_num,
-                destination:destination,
-                start_station:start_station
+                destinationID:destination,
+                cityId:start_station
         });
         res.status(201).json({
             message:"create success"
@@ -168,6 +185,23 @@ const tripDeleteTrip=async(req,res,next)=>{
             err.statusCode=404;
             throw err;
         }
+        ////////////////// get value of city id and destination id in each trip
+        // destination
+        // start_station
+        // busBusNum
+        for(i=0;i<trips.length;i++){
+            let desCity=await CITY.findOne({where:{id:trips[i].destinationID}});
+            let startCity=await CITY.findOne({where:{id:trips[i].cityId}});
+            trips[i]={
+                    trip_id:trips[i].trip_id,
+                    date:trips[i].date,
+                    availabel_sets:trips[i].availabel_sets,
+                    destination:desCity.name,
+                    start_station:startCity.name,
+                    busBusNum:trips[i].busBusNum,
+                };
+            }
+        //
         res.status(200).json({
             trips:trips        
         });
