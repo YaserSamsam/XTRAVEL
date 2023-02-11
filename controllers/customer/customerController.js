@@ -307,7 +307,7 @@ const saveRservation= async(req,res,next)=>{
         ,trip_availabel:trip_availabel
         ,userTrip:Trip
         ,user:custm
-        ,AllTrips:trips
+        ,AllTrips:availabelTrips
     });
 } catch(err){
     if(!err.statusCode)
