@@ -180,7 +180,17 @@ const getTripLocations=async(req,res,next)=>{
     const tripId=req.params.trip_id;
     try{
         const trip=await TRIP.findOne({where:{trip_id:tripId}});
+        if(trip==null){
+            const err=new Error("this trip not found");
+            err.statusCode=404;
+            throw err;
+        }
         const custm=await trip.getCustomers();
+        if(custm.length==0){
+            const err=new Error("no reservation found");
+            err.statusCode=404;
+            throw err;
+        }
         let locatn=[];
         for(j=0;j<custm.length;j++){
             let coordinates=await custm[j].reservations.getLocation();
